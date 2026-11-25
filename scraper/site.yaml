@@ -1,0 +1,10 @@
+# Cosmic Clock: who this site is for and which position types it keeps.
+title: Cosmic Clock
+person: Sulekha Gupta
+first_name: Sulekha
+tagline: PhD positions and internships, curated for Sulekha Gupta
+cv: cv/sulekha.txt
+# Position types thrown away before ranking (she will hold an MSc, so postdoc and
+# faculty posts are out of reach). Allowed: phd, internship, fellowship, technician,
+# scientist, other, postdoc, faculty.
+drop_kinds: [postdoc, faculty]

@@ -1,0 +1,86 @@
+from classify import classify
+
+
+def c(title, description="", org="", location="", **hints):
+    return classify({"title": title, "description": description, "org": org, "location": location, "hints": hints})
+
+
+def test_amr_postdoc_in_europe():
+    j = c("Postdoctoral Researcher in Antimicrobial Resistance of Klebsiella pneumoniae",
+          "Wet-lab project on carbapenem resistance: bacterial culture, PCR and whole-genome sequencing of clinical "
+          "isolates. PhD in microbiology required. Visa support available.", "Amsterdam UMC", "Amsterdam, Netherlands")
+    # classified as before, but postdocs are dropped for Sulekha (scraper/site.yaml) and it needs a PhD
+    assert not j["relevant"] and j["kind"] == "postdoc" and j["lab"] == "wet" and j["region"] == "europe" and j["needs_phd"]
+    assert j["topics"][0] == "micro.amr" and j["sector"] == "academic" and j["visa"] == "sponsors" and not j["coding"]
+
+
+def test_ai_lab_wet_and_dry_roles():
+    wet = c("Research Scientist, Life Sciences (Experimental Biology)",
+            "Design and run experimental programs: molecular biology, biochemistry, protein and nucleic acid "
+            "characterization, assay development. PhD in a biological science. We do sponsor visas!",
+            "Anthropic", "San Francisco, CA", sector="ai-bio")
+    assert (wet["kind"], wet["lab"], wet["sector"], wet["visa"], wet["coding"]) == ("scientist", "wet", "ai-bio", "sponsors", False)
+    dry = c("Machine Learning Scientist, AI for Protein Engineering",
+            "Strong ML fundamentals; proficiency in Python and PyTorch; protein design; wet-lab teams.",
+            "Lila Sciences", "San Francisco, CA", sector="ai-bio")
+    assert dry["relevant"] and dry["lab"] == "dry" and dry["coding"]
+
+
+def test_not_research_or_not_biology_is_dropped():
+    assert not c("Software Engineer, Infrastructure", "Kubernetes", "Anthropic", sector="ai-bio")["relevant"]
+    assert not c("Lecturer in Accounting", "Financial accounting")["relevant"]
+    assert not c("Postdoc in galaxy evolution", "stellar populations")["relevant"]
+    assert not c("Postdoc position in Human-Centred Artificial Intelligence", "HCI and AI safety")["relevant"]
+    assert not c("Machine Learning Engineer", "PyTorch, LLMs, Python pipelines")["relevant"]
+    phd = c("PhD position in bacterial cell biology", "Streptococcus")
+    assert phd["relevant"] and phd["kind"] == "phd" and not phd["needs_phd"]
+
+
+def test_research_associate_depends_on_country_and_sector():
+    assert c("Research Associate, Biology", "PCR, cloning. BS or MS in microbiology.", "Anthropic",
+             "San Francisco, CA", sector="ai-bio")["kind"] == "technician"
+    uk = c("Research Associate in Bacterial Genomics", "PhD required. Eligible for sponsorship under the Skilled "
+           "Worker route.", "University of Oxford", "Oxford, UK")
+    assert (uk["kind"], uk["level"], uk["visa"]) == ("postdoc", "mid", "sponsors")
+    assert c("Research Associate-I (Bacterial pathogenesis)", "", "THSTI", "Faridabad")["kind"] == "postdoc"
+    assert c("Junior Research Fellow (JRF)", "MSc Microbiology", "CSIR-IMTECH", "Chandigarh")["kind"] == "technician"
+
+
+def test_visa_refusal_wins_and_wet_cues():
+    j = c("Senior Scientist, Phage Engineering", "Hands-on bench role in phage engineering; molecular biology. "
+          "We are unable to sponsor visas for this role.", "Tabula Bio", "San Francisco", sector="ai-bio")
+    assert (j["visa"], j["lab"], j["level"]) == ("no-sponsorship", "wet", "senior")
+    assert c("Biologist, DeepMind", "3 years of wet-lab experience with high-consequence pathogens. Microbiology.",
+             "Google DeepMind", "London, UK", sector="ai-bio")["lab"] == "wet"
+
+
+def test_amr_needs_a_microbial_signal():
+    # the two false positives seen on the live site
+    cancer = c("Postdoctoral studies in uncovering novel therapeutic targets in MYC-driven tumors",
+               "Multidrug resistance (MDR) of cancer cells; drug-resistant tumours; resistance mechanisms.")
+    assert "micro.amr" not in cancer["topics"]
+    brain = c("Postdoctoral Researcher; Neurotropic viruses in Alzheimer's disease",
+              "Amyloid-beta may act as an antimicrobial peptide; antibiotics and antimicrobials in the brain.")
+    assert "micro.amr" not in brain["topics"] and "drug.antiinfective" not in brain["topics"]
+    kleb = c("Postdoc on multidrug-resistant Klebsiella", "MDR Klebsiella pneumoniae isolates from hospitals.")
+    assert "micro.amr" in kleb["topics"]
+    # ... but a job whose title names antimicrobials is about them, even with a thin description
+    hdar = c("Interdisciplinary Postdoctoral Fellow in Host-Directed Antimicrobial Research", "Copenhagen, Denmark")
+    assert "micro.amr" in hdar["topics"]
+    assert "drug.antiinfective" not in c("Research Associate in Antimicrobial Resistance Genomics", "")["topics"]
+
+
+def test_sulekhas_topics_and_kinds():
+    sen = c("Doctoral candidate in cellular senescence", "Senescent fibroblasts, SASP, SA-beta-gal and DNA damage after "
+            "ionising radiation; extracellular matrix remodelling.", "ERIBA", "Groningen, Netherlands")
+    assert sen["relevant"] and sen["kind"] == "phd" and sen["topics"][0] == "molbio.ageing"
+    assert {"molbio.dnadamage", "molbio.ecm"} <= set(sen["topics"])
+    intern = c("Research Intern, Experimental Biology (Summer 2027)", "Mammalian cell culture and cell-based assays.",
+               "Isomorphic Labs", "London, UK", sector="ai-bio")
+    assert intern["relevant"] and intern["kind"] == "internship" and intern["level"] == "junior"
+    sci = c("Scientist, Cell Biology", "PhD in cell biology required.", "Example Bio", "Basel, Switzerland", sector="industry")
+    assert sci["relevant"] and sci["needs_phd"]
+    ra = c("Research Assistant, Cell Biology", "MSc or PhD in a life science; cell culture.", "Example Bio", "Basel")
+    assert ra["kind"] == "technician" and not ra["needs_phd"]
+    space = c("PhD position: muscle cells in microgravity", "Spaceflight and simulated microgravity; myotubes.")
+    assert "molbio.space" in space["topics"]

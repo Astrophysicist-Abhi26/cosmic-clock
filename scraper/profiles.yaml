@@ -1,0 +1,172 @@
+# Research profiles — one shared database of positions, ranked differently per profile.
+#
+# A profile never changes what is collected or how it is tagged; it only changes the
+# ranking. The site has a profile picker; ?p=<id> in the address opens a profile
+# directly, and the "Tune" panel lets you adjust a copy of any profile in the browser.
+# The formula is documented at the top of scraper/profiles.py and mirrored in
+# docs/score.js (tests/test_profiles.py checks that both give identical scores).
+#
+# Keys
+#   label, blurb   shown in the picker
+#   interests      taxonomy node -> weight 0-100, or a level name below. A node is a field
+#                  (micro, drug, immuno, molbio, genomics, biotech, health, org, ops, life)
+#                  or a sub-field (micro.amr, ...; see scraper/taxonomy.py). The MOST SPECIFIC
+#                  node listed wins. A position with no positively weighted topic scores 0.
+#   cross_field    share of the best weight from a second field that is added
+#   kinds          bonus by position type: phd, internship, fellowship, technician, scientist, other,
+#                  postdoc, faculty (postdoc and faculty posts are dropped by scraper/site.yaml anyway)
+#   sectors        bonus by sector: academic, industry, ai-bio, public-health, nonprofit
+#   labs           bonus by lab type: wet, hybrid, dry, unknown
+#   regions        bonus by region: europe, india, north-america, asia-pacific, middle-east,
+#                  africa, latin-america, remote, unknown
+#   coding         added when the role needs substantial programming (usually negative)
+#   senior         added for senior roles (5+ years post-PhD, principal, director ...)
+#   needs_phd      added when a job (not a PhD position) asks for a PhD and does not accept an MSc
+#   visa           bonus by visa line: sponsors, no-sponsorship, unknown
+#   cv             points for a perfect match with the CV text in scraper/cv/<id>.txt (0-1 scaled)
+#   llm            +/- points from the optional Claude fit check (needs ANTHROPIC_API_KEY)
+#   network        organisation/location pattern -> bonus (lower-case, accents removed; first match counts)
+#   network_label  how that bonus is named on the cards
+#   search         terms and places used by the "Search elsewhere" tab (LinkedIn, Google Jobs ...)
+#
+# Level names: top 100 · very_high 85 · high 70 · medium 45 · low 20 · none 0 · avoid -40
+
+default: sulekha
+
+profiles:
+
+  sulekha:
+    label: "Sulekha — ageing & cell biology: PhDs and internships"
+    blurb: >-
+      Built from her CV: cellular senescence and ageing, DNA damage and radiation, the extracellular
+      matrix, cell and molecular biology, plus her microbiology background. PhD positions first, then
+      internships and research-assistant roles. Europe first, Bengaluru close behind; jobs that need a
+      PhD are pushed down.
+    interests:
+      molbio: high
+      molbio.ageing: top
+      molbio.dnadamage: 90
+      molbio.ecm: 88
+      molbio.cell: 88
+      molbio.space: 80
+      molbio.molecular: 75
+      molbio.biochem: 65
+      molbio.cancer: 55
+      org: 40
+      org.dev: 70
+      immuno: 50
+      micro: 45
+      micro.amr: 55
+      micro.microbiome: 45
+      micro.pathogenesis: 40
+      drug: 35
+      genomics: 40
+      genomics.aibio: 50
+      genomics.ngs: 40
+      genomics.bioinfo: 30
+      biotech: 35
+      biotech.automation: 40
+      biotech.synbio: 40
+      health: 35
+      health.epi: 25
+      ops: 15
+      life: 30
+    cross_field: 0.25
+    kinds: {phd: 16, internship: 12, fellowship: 8, technician: 6, scientist: 0, other: -5, postdoc: -50, faculty: -60}
+    sectors: {academic: 5, industry: 2, ai-bio: 7, public-health: 2, nonprofit: 3}
+    labs: {wet: 8, hybrid: 5, dry: -12, unknown: 0}
+    regions: {europe: 12, india: 7, north-america: 2, asia-pacific: 2, middle-east: 0, africa: 0,
+              latin-america: 0, remote: 0, unknown: 0}
+    coding: -12
+    senior: -25
+    needs_phd: -30
+    visa: {sponsors: 4, no-sponsorship: -30, unknown: 0}
+    cv: 22
+    llm: 10
+    network_label: "Near Bengaluru"
+    network:
+      "bengaluru|bangalore": 6
+    search:
+      terms: ["PhD position ageing", "PhD cellular senescence", "PhD cell biology", "doctoral candidate molecular biology",
+              "PhD studentship biology", "research internship biology", "summer research internship life sciences",
+              "research assistant cell biology", "project assistant life sciences", "junior research fellow biology"]
+      places: ["Europe", "Germany", "Netherlands", "Switzerland", "Austria", "United Kingdom", "Sweden", "Denmark",
+               "France", "Bengaluru", "India"]
+
+  internships:
+    label: "Internships first (Bengaluru, India and abroad)"
+    blurb: >-
+      Internships and summer projects at the top, then research-assistant roles. Bengaluru gets an extra
+      boost; topics as in her main profile.
+    interests: {molbio: high, molbio.ageing: top, molbio.cell: 90, molbio.dnadamage: 85, molbio.ecm: 85, molbio.space: 75,
+                molbio.molecular: 75, molbio.biochem: 60, org: 45, immuno: 50, micro: 50, genomics: 45, biotech: 45,
+                drug: 40, health: 35, life: 35}
+    cross_field: 0.25
+    kinds: {internship: 30, technician: 10, phd: 6, fellowship: 4, scientist: 0, other: -5, postdoc: -50, faculty: -60}
+    sectors: {academic: 4, industry: 4, ai-bio: 8}
+    regions: {india: 12, europe: 8, north-america: 3, asia-pacific: 3}
+    coding: -10
+    senior: -25
+    needs_phd: -30
+    cv: 15
+    llm: 8
+    network_label: "Near Bengaluru"
+    network:
+      "bengaluru|bangalore": 12
+    search:
+      terms: ["research internship biology", "summer internship life sciences", "biology intern", "lab intern",
+              "research intern cell biology", "project assistant biology"]
+      places: ["Bengaluru", "India", "Europe", "Germany", "Switzerland"]
+
+  ageing:
+    label: "Ageing & senescence only"
+    blurb: Only ageing, senescence, DNA damage, matrix and space-biology work scores well; everything else sinks.
+    interests: {molbio.ageing: top, molbio.dnadamage: 85, molbio.ecm: 80, molbio.space: 75, molbio.cell: 40,
+                molbio.molecular: 25, molbio: 15, org.dev: 30, immuno: 15}
+    cross_field: 0.1
+    kinds: {phd: 16, internship: 12, fellowship: 8, technician: 6, postdoc: -50, faculty: -60}
+    regions: {europe: 12, india: 6}
+    senior: -25
+    needs_phd: -30
+    cv: 15
+
+  ai-labs:
+    label: "AI-for-biology companies"
+    blurb: Internships and early-career lab roles at AI-and-biology companies and biotech, for a few months or longer.
+    interests: {genomics.aibio: top, biotech.automation: 85, biotech.synbio: 70, molbio: 65, molbio.cell: 75,
+                molbio.biochem: 70, molbio.ageing: 80, drug: 60, genomics: 55, micro: 45, immuno: 45, biotech: 55}
+    cross_field: 0.3
+    kinds: {internship: 18, technician: 12, scientist: 4, phd: 6, postdoc: -50, faculty: -60}
+    sectors: {ai-bio: 25, industry: 8, academic: -5}
+    labs: {wet: 8, hybrid: 8, dry: -5}
+    coding: -6
+    senior: -25
+    needs_phd: -30
+    cv: 10
+    search:
+      terms: ["AI biology internship", "wet lab intern AI", "lab automation intern", "protein design intern",
+              "research associate biology AI"]
+      places: ["London", "Basel", "Cambridge UK", "Paris", "Bengaluru", "Europe"]
+
+  microbiology:
+    label: "Microbiology background"
+    blurb: Her BSc subject — antimicrobial resistance, wastewater and environmental microbiology, infection biology.
+    interests: {micro: top, micro.amr: top, micro.onehealth: 85, micro.microbiome: 80, micro.pathogenesis: 80,
+                micro.phage: 75, micro.genomics: 70, micro.clinical: 60, health.epi: 50, molbio: 40, immuno: 40}
+    cross_field: 0.25
+    kinds: {phd: 16, internship: 12, fellowship: 8, technician: 6, postdoc: -50, faculty: -60}
+    regions: {europe: 12, india: 6}
+    senior: -25
+    needs_phd: -30
+    cv: 10
+
+  explore:
+    label: "Explore all of biology"
+    blurb: Every biology field counts about the same — for browsing beyond her main topics.
+    interests: {micro: 60, molbio: 70, immuno: 60, genomics: 55, drug: 55, biotech: 55, health: 45, org: 55, ops: 20, life: 50}
+    cross_field: 0.2
+    kinds: {phd: 12, internship: 10, fellowship: 6, technician: 5, postdoc: -50, faculty: -60}
+    regions: {europe: 8, india: 6}
+    senior: -20
+    needs_phd: -25
+    cv: 8

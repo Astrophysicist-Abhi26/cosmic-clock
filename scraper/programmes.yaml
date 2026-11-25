@@ -1,0 +1,236 @@
+# PhD programmes, internship schemes and funding Sulekha can apply to herself.
+# Shown in the site's Programmes tab; internship schemes also appear in the Internships tab.
+#
+#   kind           phd-programme | internship | funding
+#   area           india | abroad   (which Internships column a scheme sits in)
+#   enrolled_only  true when only currently enrolled students can apply (most internships)
+#   windows        [{label, opens, deadline, checked}] only when the dates were checked; dates YYYY-MM-DD
+#   verified       true when the link and summary were checked
+# Dates go stale every year: everything without a checked window links to the official page.
+
+programmes:
+
+  # ── Internships: India ────────────────────────────────────────────────────
+  - id: srfp
+    kind: internship
+    area: india
+    name: Science Academies' Summer Research Fellowship Programme (SRFP)
+    funder: Indian Academy of Sciences (Bengaluru), INSA (New Delhi) and NASI (Prayagraj)
+    region: india
+    url: https://www.ias.ac.in
+    who: >-
+      Summer research projects with scientists approved by the three academies, many of them in
+      Bengaluru. For students and teachers; PhD students cannot apply. Each degree has set eligible
+      years: in 2026 MSc applicants had to be in their first year.
+    fit: The best-known route into a Bengaluru lab for a summer. Check whether a second-year MSc student can apply for 2027.
+    enrolled_only: true
+    windows:
+      - {label: "SRFP 2027", deadline: 2026-11-30, checked: "2026-11, notice of the 2027 call"}
+    verified: true
+
+  - id: jncasr
+    kind: internship
+    area: india
+    name: JNCASR summer research fellowships (Bengaluru)
+    funder: Jawaharlal Nehru Centre for Advanced Scientific Research
+    region: india
+    url: https://www.jncasr.ac.in
+    who: Summer research fellowships for students at JNCASR in Jakkur, Bengaluru. Check eligible degrees and dates on the site.
+    fit: A second Bengaluru option with molecular biology and genetics labs.
+    enrolled_only: true
+    verified: false
+
+  - id: ncbs-instem
+    kind: internship
+    area: india
+    name: Visiting students at NCBS and inStem (Bengaluru)
+    funder: National Centre for Biological Sciences / Institute for Stem Cell Science and Regenerative Medicine
+    region: india
+    url: https://www.ncbs.res.in
+    who: Labs on the Bangalore Life Science Cluster campus take short-term students. The usual route is a short email to a group leader with a CV and two lines on why their work interests you.
+    fit: Stem-cell, regeneration and cell-biology groups next door to IISc.
+    verified: false
+
+  - id: iisc-labs
+    kind: internship
+    area: india
+    name: Short projects in other IISc labs
+    funder: Indian Institute of Science
+    region: india
+    url: https://iisc.ac.in
+    who: As an IISc student she can ask labs in other departments (for example Biochemistry, Molecular Reproduction, Development and Genetics, or the Centre for BioSystems Science and Engineering) for a project during a break.
+    fit: Easiest to arrange and adds a second technique to the CV.
+    verified: false
+
+  # ── Internships: abroad ───────────────────────────────────────────────────
+  - id: charpak-lab
+    kind: internship
+    area: abroad
+    name: Charpak Lab Scholarship (research internship in France)
+    funder: French Embassy in India / Campus France
+    region: europe
+    url: https://www.inde.campusfrance.org
+    who: >-
+      A research internship in a French laboratory for Indian nationals aged up to 30 who are
+      currently enrolled at Bachelor's or Master's level in an Indian institution.
+    fit: The clearest Europe internship route for an Indian MSc student — and a step towards a PhD in France.
+    enrolled_only: true
+    verified: true
+
+  - id: charpak-summer
+    kind: internship
+    area: abroad
+    name: France Excellence Charpak Summer Training Scholarship
+    funder: French Embassy in India / Campus France
+    region: europe
+    url: https://www.inde.campusfrance.org
+    who: A short internship or research project in a French lab or institution for Indian students enrolled at Bachelor's or Master's level; benefits cover at most two months.
+    fit: A shorter summer option in France.
+    enrolled_only: true
+    verified: true
+
+  - id: mpg-internships
+    kind: internship
+    area: abroad
+    name: Max Planck Institutes — summer research internships (Germany)
+    funder: Max Planck Society
+    region: europe
+    url: https://www.mpg.de
+    who: Several Max Planck Institutes run paid summer internships for Bachelor's and Master's students; each institute sets its own call.
+    fit: Includes the MPI for Biology of Ageing in Cologne — worth checking every winter.
+    enrolled_only: true
+    verified: false
+
+  - id: khorana
+    kind: internship
+    area: abroad
+    name: Khorana Program for Scholars (USA)
+    funder: IUSSTF / DBT
+    region: north-america
+    url: https://www.iusstf.org
+    who: Summer research at US universities for students from Indian institutions. Check eligible degrees and the annual call on the site.
+    fit: Outside Europe, but a well-known funded summer route.
+    verified: false
+
+  - id: oist
+    kind: internship
+    area: abroad
+    name: OIST Research Internship (Japan)
+    funder: Okinawa Institute of Science and Technology
+    region: asia-pacific
+    url: https://www.oist.jp
+    who: Funded research internships in OIST units. Check who can apply and the rounds on the site.
+    fit: Strong cell and developmental biology units; English-speaking campus.
+    verified: false
+
+  # ── Structured PhD programmes in Europe ──────────────────────────────────
+  - id: msca-dn
+    kind: phd-programme
+    name: MSCA Doctoral Networks (EU-funded PhD positions)
+    funder: European Commission — Marie Skłodowska-Curie Actions
+    region: europe
+    url: https://euraxess.ec.europa.eu/jobs/search?keywords=MSCA%20doctoral%20network
+    who: Salaried PhD positions ("doctoral candidates") in EU-funded networks; any nationality. A mobility rule applies — check each call.
+    fit: Posted all year on EURAXESS — the PhD positions tab collects them daily.
+    verified: false
+
+  - id: embl
+    kind: phd-programme
+    name: EMBL International PhD Programme
+    funder: European Molecular Biology Laboratory
+    region: europe
+    url: https://www.embl.org
+    who: PhD positions across EMBL's sites in Heidelberg, Barcelona, Grenoble, Hamburg, Rome and Hinxton through a central application.
+    fit: Cell, developmental and molecular biology at the top level.
+    verified: false
+
+  - id: imprs-ageing
+    kind: phd-programme
+    name: IMPRS on the Biology of Ageing (Cologne)
+    funder: Max Planck Institute for Biology of Ageing, University of Cologne and partners
+    region: europe
+    url: https://www.age.mpg.de
+    who: A graduate school devoted to ageing research.
+    fit: The closest match to her interest in senescence and longevity.
+    verified: false
+
+  - id: fli
+    kind: phd-programme
+    name: Leibniz Institute on Aging — Fritz Lipmann Institute (Jena)
+    funder: Leibniz Association
+    region: europe
+    url: https://www.leibniz-fli.de
+    who: Germany's institute dedicated to ageing research; PhD positions are advertised on its site.
+    fit: Senescence, stem-cell ageing and DNA damage.
+    verified: false
+
+  - id: eriba
+    kind: phd-programme
+    name: European Research Institute for the Biology of Ageing (ERIBA, Groningen)
+    funder: University Medical Center Groningen
+    region: europe
+    url: https://eriba.umcg.nl
+    who: Ageing-research institute in the Netherlands; PhD positions appear on its site and on EURAXESS.
+    fit: A research institute built entirely around ageing biology.
+    verified: false
+
+  - id: vbc
+    kind: phd-programme
+    name: Vienna BioCenter PhD Programme
+    funder: IMP, IMBA, GMI and the University of Vienna
+    region: europe
+    url: https://www.viennabiocenter.org
+    who: An international PhD programme with a central application.
+    fit: Molecular and cell biology with a strong international cohort.
+    verified: false
+
+  - id: ista
+    kind: phd-programme
+    name: ISTA PhD programme (Klosterneuburg, Austria)
+    funder: Institute of Science and Technology Austria
+    region: europe
+    url: https://ista.ac.at
+    who: An interdisciplinary graduate school; students rotate through labs before choosing one.
+    fit: Good if she wants to try a few labs first.
+    verified: false
+
+  - id: dkfz
+    kind: phd-programme
+    name: DKFZ International PhD Program (Heidelberg)
+    funder: German Cancer Research Center
+    region: europe
+    url: https://www.dkfz.de
+    who: A large international PhD program with regular selection rounds.
+    fit: DNA damage, radiation biology and senescence in cancer.
+    verified: false
+
+  - id: crick
+    kind: phd-programme
+    name: Francis Crick Institute PhD programme (London)
+    funder: The Francis Crick Institute
+    region: europe
+    url: https://www.crick.ac.uk
+    who: Fully funded PhD studentships with an annual recruitment round.
+    fit: Cell biology and ageing-related groups; check funding rules for international students.
+    verified: false
+
+  - id: crg
+    kind: phd-programme
+    name: CRG international PhD programme (Barcelona)
+    funder: Centre for Genomic Regulation
+    region: europe
+    url: https://www.crg.eu
+    who: International PhD calls with funded positions.
+    fit: Cell and developmental biology, systems biology.
+    verified: false
+
+  # ── Funding she can take to a lab ─────────────────────────────────────────
+  - id: daad
+    kind: funding
+    name: DAAD scholarships for doctoral study in Germany
+    funder: German Academic Exchange Service (DAAD)
+    region: europe
+    url: https://www.daad.in
+    who: Scholarships for Indian graduates who want to do a PhD in Germany. Check the current call and eligibility.
+    fit: Useful when a German lab wants her but has no salaried position.
+    verified: false
